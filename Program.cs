@@ -13,9 +13,9 @@ namespace TestBench
 {
     partial class Program
     {
-		//	An internal pointed to the current Instance of the class
+		//	An internal pointer to the current Instance of the class
 		//	Used to reference Program and avoid using Activator Create Instance Calls
-		//	this will not work for static method calls
+		//	'this' will not work for static method calls
 		protected static Program m_this;
 		protected static string m_prompt = ":>";
 		protected static Type m_type = typeof(Program);
