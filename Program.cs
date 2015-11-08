@@ -4,17 +4,16 @@ using System.Reflection;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 using System.Linq;
-using System.Threading;
 using System.Text.RegularExpressions;
+using System.ServiceProcess;
 
 namespace TestBench
 {
-    partial class Program
+	partial class Program
     {
 		//	An internal pointer to the current Instance of the class
-		//	Used to reference Program and avoid using Activator Create Instance Calls
+		//	used to reference Program and avoid using Activator Create Instance Calls
 		//	'this' will not work for static method calls
 		protected static Program m_this;
 		protected static string m_prompt = ":>";
@@ -29,22 +28,31 @@ namespace TestBench
 		[STAThread]
 		static void Main(string[] args)
 		{
-			CreateMethodCache();
-			AddTraceListeners();
-
-			Console.Clear();
-			Console.ForegroundColor = ConsoleColor.White;
-			Console.BufferHeight = 300;
-			Console.BufferWidth = 100;
-			Console.Title = "Test Bench";
-
-			if (args.Length > 0)
+			//	TestBench is running as a Service
+			if (Environment.UserInteractive == false)
 			{
-				RunCommand(args);
-				return;
+				ServiceBase[] ServicesToRun = new ServiceBase[] { new SampleService() };
+				ServiceBase.Run(ServicesToRun);
 			}
+			else
+			{
+				CreateMethodCache();
+				AddTraceListeners();
 
-			MainLoop();
+				Console.Clear();
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.BufferHeight = 300;
+				Console.BufferWidth = 100;
+				Console.Title = "Test Bench";
+
+				if (args.Length > 0)
+				{
+					RunCommand(args);
+					return;
+				}
+
+				MainLoop();
+			}
 		}
 		static void MainLoop()
 		{
@@ -205,6 +213,51 @@ namespace TestBench
                 mc.Execute();
             }
         }
+
+		static void writeHeader<T>(T data)
+		{
+			if (data == null)
+			{
+				Console.WriteLine("Unable to create Header from Null Object");
+				return;
+			}
+			var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			foreach (var prop in props)
+			{
+				Console.Write("{0, 8} ", prop.Name);
+			}
+			Console.WriteLine();
+		}
+		static void writeCollectionData<T>(IEnumerable<T> data)
+		{
+			if (data == null)
+			{
+				Console.WriteLine("Unable to write data from Null Object");
+				return;
+			}
+			var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			var i = 0;
+			foreach (var t in data)
+			{
+				++i;
+				Console.Write("{0}: ", i);
+				writeData(t, props);
+				Console.WriteLine();
+			}
+		}
+		static void writeData<T>(T data, IEnumerable<PropertyInfo> propertyInfo = null)
+		{
+			if (data == null)
+			{
+				Console.WriteLine("Unable to write data from Null Object");
+				return;
+			}
+			var props = (propertyInfo != null) ? propertyInfo : typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			foreach (var prop in props)
+			{
+				Console.Write("{0, 8} ", prop.GetValue(data));
+			}
+		}
 
 		static TimeSpan CalculateEta(DateTime startTime, int totalItems, int completeItems)
 		{

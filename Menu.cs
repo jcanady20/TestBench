@@ -8,12 +8,12 @@ namespace TestBench
 	public class Menu
 	{
 		private int m_currentlocation = 0;
-		private List<MenuChoice> m_choices;
+		private IList<MenuChoice> m_choices;
 		
 		public Menu()
 		{
 		}
-		public Menu(List<string> choices)
+		public Menu(IList<string> choices)
 		{
 			if (m_choices == null)
 				m_choices = new List<MenuChoice>();
@@ -32,12 +32,11 @@ namespace TestBench
 		{
 			m_choices = choices.ToList();
 		}
-		public Menu(List<MenuChoice> choices)
+		public Menu(IList<MenuChoice> choices)
 		{
 			m_choices = choices;
 		}
-
-		public List<MenuChoice> Choices
+		public IList<MenuChoice> Choices
 		{
 			get
 			{
@@ -49,7 +48,6 @@ namespace TestBench
 			}
 		}
 		public bool Canceled { get; private set; }
-
 		public void RunMenu()
 		{
 			bool _run = true;
@@ -113,13 +111,13 @@ namespace TestBench
 
 	public class MenuChoice
 	{
-		private Action _action;
+		private Action m_action;
 		public MenuChoice()
 		{ }
 		public MenuChoice(Action action)
 			: this()
 		{
-			_action = action;
+			m_action = action;
 		}
 		public MenuChoice(string description)
 			: this()
@@ -129,14 +127,14 @@ namespace TestBench
 		public MenuChoice(Action action, string description)
 			: this()
 		{
-			_action = action;
+			m_action = action;
 			Description = description;
 		}
 		public string Description { get; set; }
 		public bool Selected { get; set; }
 		public void Execute()
 		{
-			_action.Invoke();
+			m_action.Invoke();
 		}
 	}
 }
