@@ -1,0 +1,15 @@
+C:\Users\james\Projects\TestBench\bin\Debug\net10.0\TestBench.exe
+C:\Users\james\Projects\TestBench\bin\Debug\net10.0\TestBench.deps.json
+C:\Users\james\Projects\TestBench\bin\Debug\net10.0\TestBench.runtimeconfig.json
+C:\Users\james\Projects\TestBench\bin\Debug\net10.0\TestBench.dll
+C:\Users\james\Projects\TestBench\bin\Debug\net10.0\TestBench.pdb
+C:\Users\james\Projects\TestBench\obj\Debug\net10.0\TestBench.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\james\Projects\TestBench\obj\Debug\net10.0\TestBench.AssemblyInfoInputs.cache
+C:\Users\james\Projects\TestBench\obj\Debug\net10.0\TestBench.AssemblyInfo.cs
+C:\Users\james\Projects\TestBench\obj\Debug\net10.0\TestBench.csproj.CoreCompileInputs.cache
+C:\Users\james\Projects\TestBench\obj\Debug\net10.0\TestBench.sourcelink.json
+C:\Users\james\Projects\TestBench\obj\Debug\net10.0\TestBench.dll
+C:\Users\james\Projects\TestBench\obj\Debug\net10.0\refint\TestBench.dll
+C:\Users\james\Projects\TestBench\obj\Debug\net10.0\TestBench.pdb
+C:\Users\james\Projects\TestBench\obj\Debug\net10.0\TestBench.genruntimeconfig.cache
+C:\Users\james\Projects\TestBench\obj\Debug\net10.0\ref\TestBench.dll

@@ -1,140 +1,130 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace TestBench
+namespace TestBench;
+
+public class Menu
 {
-	public class Menu
-	{
-		private int m_currentlocation = 0;
-		private IList<MenuChoice> m_choices;
-		
-		public Menu()
-		{
-		}
-		public Menu(IList<string> choices)
-		{
-			if (m_choices == null)
-				m_choices = new List<MenuChoice>();
+  private int _currentLocation = 0;
+  private IList<MenuChoice> _choices;
+  
+  public Menu()
+  { }
+  public Menu(IList<string> choices)
+  {
+    if (_choices == null)
+      _choices = new List<MenuChoice>();
 
-			m_choices.Clear();
+    _choices.Clear();
 
-			foreach (string s in choices)
-			{
-				MenuChoice mc = new MenuChoice();
-				mc.Description = s;
-				m_choices.Add(mc);
+    foreach (string s in choices)
+    {
+      MenuChoice mc = new MenuChoice();
+      mc.Description = s;
+      _choices.Add(mc);
+    }
+  }
+  public Menu(MenuChoice[] choices)
+  {
+    _choices = choices.ToList();
+  }
+  public Menu(IList<MenuChoice> choices)
+  {
+    _choices = choices;
+  }
+  public IList<MenuChoice> Choices
+  {
+    get => _choices;
+    set => _choices = value;
+  }
+  public bool Canceled { get; private set; }
+  public void RunMenu()
+  {
+    bool _run = true;
+    while (_run)
+    {
+      Console.Clear();
+      int i = 0;
+      foreach (MenuChoice mc in _choices)
+      {
+        if (i == _currentLocation)
+        {
+          Console.BackgroundColor = ConsoleColor.Gray;
+          Console.ForegroundColor = ConsoleColor.Black;
+        }
+        else
+        {
+          Console.BackgroundColor = ConsoleColor.Black;
+          Console.ForegroundColor = ConsoleColor.White;
+        }
+        Console.WriteLine("{0}. [{1}]  {2}", i, (mc.Selected ? "X" : " "), mc.Description);
+        i++;
+      }
 
-			}
-		}
-		public Menu(MenuChoice[] choices)
-		{
-			m_choices = choices.ToList();
-		}
-		public Menu(IList<MenuChoice> choices)
-		{
-			m_choices = choices;
-		}
-		public IList<MenuChoice> Choices
-		{
-			get
-			{
-				return m_choices;
-			}
-			set
-			{
-				m_choices = value;
-			}
-		}
-		public bool Canceled { get; private set; }
-		public void RunMenu()
-		{
-			bool _run = true;
-			while (_run)
-			{
-				Console.Clear();
-				int i = 0;
-				foreach (MenuChoice mc in m_choices)
-				{
-					if (i == m_currentlocation)
-					{
-						Console.BackgroundColor = ConsoleColor.Gray;
-						Console.ForegroundColor = ConsoleColor.Black;
-					}
-					else
-					{
-						Console.BackgroundColor = ConsoleColor.Black;
-						Console.ForegroundColor = ConsoleColor.White;
-					}
-					Console.WriteLine("{0}. [{1}]  {2}", i, (mc.Selected ? "X" : " "), mc.Description);
-					i++;
-				}
+      Console.BackgroundColor = ConsoleColor.Black;
+      Console.ForegroundColor = ConsoleColor.White;
+      Console.WriteLine("");
+      Console.WriteLine("Press Enter to Execute");
+      Console.WriteLine("Press Q to Cancel");
 
-				Console.BackgroundColor = ConsoleColor.Black;
-				Console.ForegroundColor = ConsoleColor.White;
-				Console.WriteLine("");
-				Console.WriteLine("Press Enter to Execute");
-				Console.WriteLine("Press Q to Cancel");
+      ConsoleKeyInfo cki = Console.ReadKey(true);
+      switch (cki.Key)
+      {
+        case ConsoleKey.UpArrow:
+          if (_currentLocation > 0)
+          {
+            --_currentLocation;
+          }
+          break;
+        case ConsoleKey.DownArrow:
+          if (_currentLocation < _choices.Count -1)
+          {
+            ++_currentLocation;
+          }
+          break;
+        case ConsoleKey.Spacebar:
+          _choices[_currentLocation].Selected = !_choices[_currentLocation].Selected;
+          break;
+        case ConsoleKey.Q:
+          Canceled = true;
+          _run = false;
+          break;
+        case ConsoleKey.Enter:
+          _run = false;
+          break;
+      }
+      
+      System.Threading.Thread.Sleep(100);
+    }
+  }
+}
 
-				ConsoleKeyInfo cki = Console.ReadKey(true);
-				switch (cki.Key)
-				{
-					case ConsoleKey.UpArrow:
-						if (m_currentlocation > 0)
-						{
-							--m_currentlocation;
-						}
-						break;
-					case ConsoleKey.DownArrow:
-						if (m_currentlocation < m_choices.Count -1)
-						{
-							++m_currentlocation;
-						}
-						break;
-					case ConsoleKey.Spacebar:
-						m_choices[m_currentlocation].Selected = !m_choices[m_currentlocation].Selected;
-						break;
-					case ConsoleKey.Q:
-						Canceled = true;
-						_run = false;
-						break;
-					case ConsoleKey.Enter:
-						_run = false;
-						break;
-				}
-				
-				System.Threading.Thread.Sleep(100);
-			}
-		}
-	}
-
-	public class MenuChoice
-	{
-		private Action m_action;
-		public MenuChoice()
-		{ }
-		public MenuChoice(Action action)
-			: this()
-		{
-			m_action = action;
-		}
-		public MenuChoice(string description)
-			: this()
-		{
-			Description = description;
-		}
-		public MenuChoice(Action action, string description)
-			: this()
-		{
-			m_action = action;
-			Description = description;
-		}
-		public string Description { get; set; }
-		public bool Selected { get; set; }
-		public void Execute()
-		{
-			m_action.Invoke();
-		}
-	}
+public class MenuChoice
+{
+  private Action _action;
+  public MenuChoice()
+  { }
+  public MenuChoice(Action action)
+    : this()
+  {
+    _action = action;
+  }
+  public MenuChoice(string description)
+    : this()
+  {
+    Description = description;
+  }
+  public MenuChoice(Action action, string description)
+    : this()
+  {
+    _action = action;
+    Description = description;
+  }
+  public string Description { get; set; }
+  public bool Selected { get; set; }
+  public void Execute()
+  {
+    _action.Invoke();
+  }
 }
